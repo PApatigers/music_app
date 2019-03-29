@@ -51,7 +51,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -148,15 +151,6 @@ public class seach_localmusic extends Activity {
                                 public void onClick(final DialogInterface dialog, int which) {
                                     FileUploadTask fileuploadtask = new FileUploadTask();
                                     fileuploadtask.execute();
-
-
-                                    /*wait = new ProgressDialog (seach_localmusic.this);
-                                    wait.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                                    wait.setTitle ("提示");
-                                    wait.setMessage ("正在上传···");
-                                    wait.setMax (100);
-                                    wait.show ( );
-                                    new Thread (new Mythread ( )).start ( );*/
                                     dialog.dismiss ();
                                 }
                             });
@@ -208,8 +202,44 @@ public class seach_localmusic extends Activity {
         }
     }
 
+    //发布信息存入数据库
+    public  Boolean fabu_mysql(Context context , String filename){
+        String str = "";
+        String user_info = str_username;
+        Log.v ("","yishoudao");
+        HttpPost RE_POST = new HttpPost("http://47.100.202.93/music/fabu_mysql.php");
+        ArrayList<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
+        params.add(new BasicNameValuePair ("user_info", user_info));
+        params.add(new BasicNameValuePair("filename", filename));
+        try {
+            RE_POST.setEntity(new UrlEncodedFormEntity (params, HTTP.UTF_8));
+            final HttpResponse RE_REPOSE = new DefaultHttpClient ().execute(RE_POST);
+            Log.e("status", RE_REPOSE.getStatusLine().toString());
+            int temp = RE_REPOSE.getStatusLine().getStatusCode();
+            if (RE_REPOSE.getStatusLine().getStatusCode() == 200) {
+                Log.v ("","fabu_in_mysql");
+                try {
+                    str = EntityUtils.toString(RE_REPOSE.getEntity(), HTTP.UTF_8);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (str.equals ("null")){
+                    str = "发布信息录入数据库失败";
+                    return false;
+                }
+            }
+            else {
+                str = "link_error";
+                Log.e ("Exception",str);
+                return false;
+            }
+        } catch (Exception x) {
+            x.printStackTrace();
+        }
+        return true;
+    }
 
-/*    class mythred implements Runnable{
+   class mythred implements Runnable{
 
         @Override
         public void run(){
@@ -225,24 +255,30 @@ public class seach_localmusic extends Activity {
                 e.printStackTrace ();
             }
         }
-    }*/
+    }
+
+    public void qianru(){
+        File file = new File (ttt);
+        String img_path = Environment.getExternalStorageDirectory ( ).toString ( )+"/appmusic/1.jpg";
+        String out_path = Environment.getExternalStorageDirectory ( ).toString ( )+"/appmusic/shuiyin/" + file.getName ();
+        create_img (str_username,img_path);
+        try{
+            shuiyin_test sy = new shuiyin_test ();
+            sy.embed (img_path,ttt,out_path);
+            }catch (MWException e){
+                e.printStackTrace ();
+            }
+    }
 
     class FileUploadTask extends AsyncTask<Object, Integer, Void> {
 
         private ProgressDialog wait = null;
-        HttpURLConnection connection = null;
-        DataOutputStream outputStream = null;
-        DataInputStream inputStream = null;
-        //the file path to upload
-        String pathToOurFile = ttt;
-        //the server address to process uploaded file
-        String urlServer = "http://47.100.202.93/music/file.php";
-        String lineEnd = "\r\n";
-        String twoHyphens = "--";
-        String boundary = "ad143asd";
-
-        File uploadFile = new File(pathToOurFile);
-        long totalSize = uploadFile.length(); // Get size of file, bytes
+        private int state;
+        Socket client = null;
+        File file;
+        DataOutputStream data = null;
+        FileInputStream filein = null;
+        Long totalSize;
 
         //执行异步任务之前执行，并在主线程执行
         @Override
@@ -258,95 +294,67 @@ public class seach_localmusic extends Activity {
         //执行异步线程，紧接前一步执行
         @Override
         protected Void doInBackground(Object... arg0) {
-            long length = 0;
-            int progress;
-            int bytesRead, bytesAvailable, bufferSize;
-            byte[] buffer;
-            int maxBufferSize = 256 * 1024;// 256KB
-            Long a = totalSize;
-            Log.e ("tag",a.toString ());
+
             try {
-                FileInputStream fileInputStream = new FileInputStream(uploadFile);
-                URL url = new URL(urlServer);
-                connection = (HttpURLConnection) url.openConnection();
-
-                // 设置每次发送块大小
-                connection.setChunkedStreamingMode(256 * 1024);// 256KB
-
-                //允许输入输出流
-                connection.setDoInput(true);
-                connection.setDoOutput(true);
-                connection.setUseCaches(false);
-
-                // 使用POST
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Connection", "Keep-Alive");
-                connection.setRequestProperty("Charset", "UTF-8");
-                connection.setRequestProperty("Content-Type",
-                        "multipart/form-data;boundary=" + boundary);
-
-                outputStream = new DataOutputStream(
-                        connection.getOutputStream());
-                outputStream.writeBytes(twoHyphens + boundary + lineEnd);
-                outputStream
-                        .writeBytes("Content-Disposition: form-data; name=\"file\";filename=\""
-                                + uploadFile.getName () + "\"" + lineEnd);
-                /*outputStream
-                        .writeBytes("Content-Type: application/octet-stream; charset="
-                        + "UTF_8" + lineEnd);*/
-                outputStream.writeBytes(lineEnd);
-
-                bytesAvailable = fileInputStream.available();
-                bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                buffer = new byte[bufferSize];
-
-                // Read file
-                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-                while (bytesRead > 0) {
-                    outputStream.write(buffer, 0, bufferSize);
-                    length += bufferSize;
-                    progress = (int) ((length * 100) / totalSize);
-                    publishProgress(progress);
-
-                    bytesAvailable = fileInputStream.available();
-                    bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                    bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-                }
-                outputStream.writeBytes(lineEnd);
-                outputStream.writeBytes(twoHyphens + boundary + twoHyphens
-                        + lineEnd);
-                publishProgress(100);
-                outputStream.flush();
-                outputStream.close();
-
-                // 接收服务端返回消息
-                int serverResponseCode = connection.getResponseCode();
-                String serverResponseMessage = connection.getResponseMessage();
-                Log.e ("tag",serverResponseCode+" && " + serverResponseMessage);
-
-                InputStream inputStream=connection.getInputStream();
-                byte[] data=new byte[1024];
-                StringBuffer sb1=new StringBuffer();
-                int leng=0;
-                while ((length=inputStream.read(data))!=-1){
-                    String s=new String(data, Charset.forName("utf-8"));
-                    sb1.append(s);
-                }
-                Log.e ("tag",sb1.toString ());
-                inputStream.close();
-
-
-                fileInputStream.close();
-                connection.disconnect();
-
-            } catch (Exception ex) {
-                // Exception handling
-                // showDialog("" + ex);
-                // Toast toast = Toast.makeText(UploadtestActivity.this, "" +
-                // ex,
-                // Toast.LENGTH_LONG);
-
+                client = new Socket ("192.168.137.1", 10056);
+            }catch (IOException e){
+                state = 0;
+                Log.e ("tag","链接失败");
+                e.printStackTrace ();
+                return null ;
             }
+
+            try {
+
+                file = new File (ttt);
+                totalSize = file.length ();
+                if (file.exists ( )) {
+                    Log.e ("tag","connecting");
+                    filein = new FileInputStream (file);
+                    data = new DataOutputStream (client.getOutputStream ( ));
+
+                    data.writeUTF (str_username);
+                    data.writeUTF (file.getName ());
+                    byte[] bytes = new byte[1024];
+                    int length = 0;
+                    Long recv_length = 0L;
+                    while ((length = filein.read (bytes, 0, bytes.length)) != -1) {
+                        data.write (bytes, 0, length);
+                        recv_length += length;
+                        publishProgress((int) ((recv_length * 100) / totalSize));  // 触发onProcsessUpgrade()
+                    }
+                    data.flush ( );
+                }
+                else {
+                    Log.e ("tag","file is not exist");
+                    client.close ();
+                }
+            }
+            catch (UnknownHostException e) {
+
+                return null;
+            }
+            catch (SocketTimeoutException e) {
+                return null;
+            }catch(IOException e){
+                Log.e ("tag","链接失败");
+                state = 0;
+                e.printStackTrace ( );
+                return null;
+            }
+            try{
+                filein.close();
+                data.close();
+                client.close ();
+                state = 1;
+                if (!fabu_mysql (seach_localmusic.this,file.getName ().toString ())){
+                    Log.e ("tag","存入数据库异常");
+                }
+                else Log.e ("tag","成功存入数据库");
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
+            Log.e ("tag","upload success");
             return null;
         }
 
@@ -360,7 +368,14 @@ public class seach_localmusic extends Activity {
         protected void onPostExecute(Void result) {
             try {
                 wait.dismiss();
-                Toast.makeText (seach_localmusic.this, "传输完成", Toast.LENGTH_SHORT).show ( );
+                String note = "";
+                if (state == 1) {
+                    note = "传输完成";
+                }
+                else if (state == 0){
+                    note = "链接失败！请检查网络";
+                }
+                Toast.makeText (seach_localmusic.this, note, Toast.LENGTH_SHORT).show ( );
                 // TODO Auto-generated method stub
             } catch (Exception e) {
             }

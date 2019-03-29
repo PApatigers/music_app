@@ -56,6 +56,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.black.music.application.user_state;
+import static com.example.black.music.application.username;
+import static com.example.black.music.login.str_username;
 
 
 public class music extends AppCompatActivity {
@@ -139,7 +141,7 @@ public class music extends AppCompatActivity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
 
-                                    if (true){
+                                    if (str_username != null){
                                         progressDialog = new ProgressDialog (music.this);
                                         progressDialog.setTitle ("提示");
                                         progressDialog.setMessage ("正在下载");
@@ -248,12 +250,11 @@ public class music extends AppCompatActivity {
         String str_url = "http://47.100.202.93/upload/" + filename;
         String path = Environment.getExternalStorageDirectory ( ).toString ( )+"/appmusic";
         File dir = new File(path);
-        if (dir.exists ()) {
+        if (!dir.exists ()) {
             dir.mkdir ( );
-
+            Log.e ("tag","create appmusic dir");
+            Log.i ("TAG", "" + path);
         }
-        Log.e ("tag","create appmusic dir");
-        Log.i ("TAG", "" + path);
         try {
             URL url = new URL (str_url);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection ( );
@@ -296,12 +297,13 @@ public class music extends AppCompatActivity {
             upload ();
             int a = user_state;
             if (upload()){
-                Log.e ("tag1","下载成功success");
-                String temp = "下载成功";
-                Message msg = new Message ();
-                msg.obj = temp;
-                upload_han.sendMessage (msg);
-
+                if (download_mysql (music.this , music_list.get (temp_posi).filename.replaceAll (" ", "%20"))){
+                    Log.e ("tag1","下载成功success");
+                    String temp = "下载成功";
+                    Message msg = new Message ();
+                    msg.obj = temp;
+                    upload_han.sendMessage (msg);
+                }
             }
 
             //将下载记录存入数据库
@@ -317,16 +319,41 @@ public class music extends AppCompatActivity {
         }
     }
 
-    public void download_mysql(Context context,String filename){
-        String username = auto_user;
-        HttpPost httpPost = new HttpPost ("http://47.100.202.93/music/down_mysql");
-        ArrayList<BasicNameValuePair> params = new ArrayList<> ();
-        params.add (new BasicNameValuePair ("username",username));
-        params.add(new BasicNameValuePair ("filename",filename));
-
-       /* try{
-            httpPost.setEntity ();
-        }*/
+    //下载信息存入数据库
+    public Boolean download_mysql(Context context,String filename){
+        String str = "";
+        String user_info = str_username;
+        Log.v ("","yishoudao");
+        HttpPost RE_POST = new HttpPost("http://47.100.202.93/music/download_mysql.php");
+        ArrayList<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
+        params.add(new BasicNameValuePair ("user_info", user_info));
+        params.add(new BasicNameValuePair("filename", filename));
+        try {
+            RE_POST.setEntity(new UrlEncodedFormEntity (params, HTTP.UTF_8));
+            final HttpResponse RE_REPOSE = new DefaultHttpClient ().execute(RE_POST);
+            Log.e("status", RE_REPOSE.getStatusLine().toString());
+            int temp = RE_REPOSE.getStatusLine().getStatusCode();
+            if (RE_REPOSE.getStatusLine().getStatusCode() == 200) {
+                Log.v ("","download_in_mysql");
+                try {
+                    str = EntityUtils.toString(RE_REPOSE.getEntity(), HTTP.UTF_8);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (str.equals ("null")){
+                    str = "下载录入数据库失败";
+                    return false;
+                }
+            }
+            else {
+                str = "link_error";
+                Log.e ("Exception",str);
+                return false;
+            }
+        } catch (Exception x) {
+            x.printStackTrace();
+        }
+        return true;
 
     }
 

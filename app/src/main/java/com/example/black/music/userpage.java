@@ -3,6 +3,7 @@ package com.example.black.music;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -20,6 +21,7 @@ public class userpage extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.e ("tag","正在create");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.own);
 
@@ -50,14 +52,17 @@ public class userpage extends Activity {
             @Override
             public void onClick(View view) {
                     startActivityForResult(new Intent(userpage.this,login.class),1);
+                    userpage.this.finish ();
             }
         };
         listener_user = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(userpage.this,userdata.class);
-                intent.putExtra("nick",nick.getText().toString());
-                startActivityForResult(intent,2);
+                Bundle bundle   = new Bundle ();
+                bundle.putString ("nick",nick.getText ().toString ());
+                intent.putExtras (bundle);
+                startActivity (intent);
             }
         };
 
@@ -121,6 +126,7 @@ public class userpage extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.e("tag","正在回调result");
         // TODO Auto-generated method stub
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == 4) {
@@ -152,8 +158,11 @@ public class userpage extends Activity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        Log.e ("tag","正在resume" );
+        super.onResume ( );
 
-
-
+    }
 }
 
