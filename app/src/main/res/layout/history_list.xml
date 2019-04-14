@@ -5,7 +5,7 @@
     android:orientation="horizontal"
     android:gravity="center_vertical"
     android:padding="5dp"
-    android:descendantFocusability="blocksDescendants">
+    android:descendantFocusability="afterDescendants">
 
     <TextView
         android:id="@+id/music_postion"
@@ -17,15 +17,34 @@
         android:textColor="#0d0c0c"
         android:textSize="20sp"/>
 
-    <TextView
-        android:id="@+id/xml_filename"
-        android:layout_width="222dp"
+    <LinearLayout
+        android:layout_width="252dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:gravity="center"
-        android:text="发布歌曲名"
-        android:textColor="#0d0c0c"
-        android:textSize="20sp" />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/xml_filename"
+            android:layout_width="222dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"
+            android:text="发布歌曲名"
+            android:textColor="#0d0c0c"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/qkl_id"
+            android:clickable="true"
+            android:layout_width="222dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="区块链ID"
+            android:ellipsize="marquee"
+            android:textIsSelectable="true"/>
+
+
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/xml_date"

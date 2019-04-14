@@ -15,12 +15,15 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -61,6 +64,7 @@ import static com.example.black.music.login.str_username;
 
 
 public class music extends AppCompatActivity {
+    private BottomNavigationView navigationView;
     private ListView listview;
     private EditText search;
     private Button sea_button;
@@ -73,8 +77,21 @@ public class music extends AppCompatActivity {
     private int temp_posi ;
     private ProgressDialog progressDialog = null;
     public static String auto_user = null;
-    public static String auto_pass = null;
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener ( ) {
 
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId ( )) {
+                case R.id.navigation_home:
+                    return true;
+                case R.id.navigation_dashboard:
+                    Intent intent = new Intent (music.this,userpage.class);
+                    startActivity (intent);
+                    return true;
+            }
+            return false;
+        }
+    };
     Handler handler = new Handler ( ) {
         @Override
         public void handleMessage(Message msg) {
@@ -115,10 +132,11 @@ public class music extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate (savedInstanceState);
         setContentView (R.layout.activity_music);
+        //启动activity默认不启动软键盘
+        getWindow ().setSoftInputMode (WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         search = (EditText) findViewById (R.id.search);
         sea_button = (Button) findViewById (R.id.search_b);
-        button1_2 = (Button) findViewById (R.id.button2);
         listview = (ListView) findViewById (R.id.list);
         listview.setTextFilterEnabled (true);
 
@@ -180,13 +198,16 @@ public class music extends AppCompatActivity {
             }
         });
 
-        button1_2.setOnClickListener (new View.OnClickListener ( ) {
-            @Override
-            public void onClick(View view) {
-                Intent intent1_2 = new Intent (music.this, userpage.class);
-                startActivity (intent1_2);
-            }
-        });
+//        button1_2.setOnClickListener (new View.OnClickListener ( ) {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent1_2 = new Intent (music.this, userpage.class);
+//                startActivity (intent1_2);
+//            }
+//        });
+
+        navigationView = findViewById (R.id.navigation);
+        navigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 
     @Override
@@ -220,7 +241,7 @@ public class music extends AppCompatActivity {
                 HttpResponse response = new DefaultHttpClient ( ).execute (httpPost);
                 int re = response.getStatusLine ( ).getStatusCode ( );
                 if (response.getStatusLine ( ).getStatusCode ( ) == 200) {
-                    String str = "[" + EntityUtils.toString (response.getEntity ( ), HTTP.UTF_8) + "]";
+                    String str = "[" + EntityUtils.toString (response.getEntity ( ), HTTP.UTF_8)+ "]";
                     JSONArray json = JSONArray.parseArray (str);
                     JSONObject object = null;
                     for (int i = 0; i < json.size ( ); i++) {

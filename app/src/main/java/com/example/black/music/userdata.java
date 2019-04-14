@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import static com.example.black.music.login.str_username;
 
 public class userdata extends Activity {
     Button re_data,exit;
@@ -51,6 +52,7 @@ public class userdata extends Activity {
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                str_username = null;
                 Intent intent = new Intent(userdata.this,login.class);
                 setResult(5,intent);
                 intent.putExtra("nick","请登录");

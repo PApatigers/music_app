@@ -2,6 +2,7 @@ package com.example.black.music;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.ContentObservable;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -37,6 +39,8 @@ import static com.example.black.music.music.auto_user;
 public class history extends Activity {
     private  ListView listView;
     his_adapter adapter  =null;
+    private Button re;
+    private TextView qkl_id;
     private Handler handler = new Handler ( ) {
         @Override
         public void handleMessage(Message msg) {
@@ -55,10 +59,19 @@ public class history extends Activity {
         super.onCreate (savedInstanceState);
         setContentView (R.layout.history);
 
+
         Intent intent = getIntent ();
+        re = findViewById (R.id.re_userdata);
         aaa = intent.getStringExtra ("nick");
         listView = findViewById (R.id.history);
         new Thread (new his_thread ()).start ();
+
+        re.setOnClickListener (new View.OnClickListener ( ) {
+            @Override
+            public void onClick(View v) {
+                history.this.finish ();
+            }
+        });
     }
 
     public class his_thread implements Runnable{
@@ -79,16 +92,20 @@ public class history extends Activity {
                         String json = "[" + EntityUtils.toString (REPOSE.getEntity ( ), HTTP.UTF_8) + "]";
                         JSONArray jsonArray = JSONArray.parseArray (json);
                         JSONObject object = null;
+                        Log.e ("tag",""+json);
                         for (int i = 0; i < jsonArray.size ( ); i++) {
                             object = jsonArray.getJSONObject (i);
                             String filename = object.getString ("filename");
+                            String qkl_id  = object.getString ("qkl_id");
                             String date = object.getString ("date");
                             record re = new record ( );
                             re.filename = filename;
                             re.date = date;
+                            re.qkl_id = qkl_id;
                             al.write_list (list, re);
                         }
                         temp = "success";
+                        Log.e ("tag","大小为：" +al.read_list (list).size ( ));
                         if (al.read_list (list).size ( ) == 0) {
                             temp = "您还未发布任何歌曲";
                         }

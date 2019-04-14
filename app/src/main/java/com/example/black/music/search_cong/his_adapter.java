@@ -46,6 +46,7 @@ public class his_adapter extends BaseAdapter {
             holder = new ViewHolder();
             view = view.inflate(context, R.layout.history_list,null);
             holder.HO_filename = (TextView) view.findViewById(R.id.xml_filename);
+            holder.qkl_id = (TextView)view.findViewById (R.id.qkl_id);
             holder.H0_date = (TextView) view.findViewById(R.id.xml_date);
             holder.position = (TextView) view.findViewById (R.id.music_postion);
             view.setTag (holder);
@@ -55,14 +56,16 @@ public class his_adapter extends BaseAdapter {
 
         //给控件赋值
         holder.HO_filename.setText(list.get (i).filename.toString ());
+        holder.qkl_id.setText (list.get (i).qkl_id.toString ());
         holder.H0_date.setText(list.get(i).date.toString());
         holder.position.setText(i+1+"");;
 
         return view;
     }
     class ViewHolder{
-        TextView HO_filename ;
-        TextView H0_date ;
+        TextView qkl_id;                    //区块链id
+        TextView HO_filename ;              //发布歌曲名
+        TextView H0_date ;                  //发布时间
         TextView position;
     }
 }

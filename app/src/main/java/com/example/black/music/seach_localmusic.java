@@ -72,6 +72,7 @@ import static com.example.black.music.application.user_state;
 import static com.example.black.music.login.str_username;
 
 public class seach_localmusic extends Activity {
+    private Button re;
     private  String temp_p = "";
     private ListView music_list;
     private List<song> list;
@@ -129,7 +130,15 @@ public class seach_localmusic extends Activity {
         music_list = (ListView) findViewById (R.id.music_list);
         search = (Button) findViewById (R.id.search);
         play = (Button)findViewById (R.id.play);
+        re = (Button)findViewById (R.id.re);
         list = new ArrayList<> ( );
+
+        re.setOnClickListener (new View.OnClickListener ( ) {
+            @Override
+            public void onClick(View v) {
+                seach_localmusic.this.finish ();
+            }
+        });
 
         search.setOnClickListener (new View.OnClickListener ( ) {
             @Override
@@ -219,7 +228,8 @@ public class seach_localmusic extends Activity {
             if (RE_REPOSE.getStatusLine().getStatusCode() == 200) {
                 Log.v ("","fabu_in_mysql");
                 try {
-                    str = EntityUtils.toString(RE_REPOSE.getEntity(), HTTP.UTF_8);
+                    String temp_utf = EntityUtils.toString(RE_REPOSE.getEntity(), HTTP.UTF_8);
+                    str = temp_utf.substring (1,temp_utf.length ());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -239,36 +249,7 @@ public class seach_localmusic extends Activity {
         return true;
     }
 
-   class mythred implements Runnable{
 
-        @Override
-        public void run(){
-            //生成水印图片
-            File file = new File (ttt);
-            String img_path = Environment.getExternalStorageDirectory ( ).toString ( )+"/appmusic/1.jpg";
-            String out_path = Environment.getExternalStorageDirectory ( ).toString ( )+"/appmusic/shuiyin/" + file.getName ();
-            create_img (str_username,img_path);
-            try{
-                shuiyin_test sy = new shuiyin_test ();
-                sy.embed (img_path,ttt,out_path);
-            }catch (MWException e){
-                e.printStackTrace ();
-            }
-        }
-    }
-
-    public void qianru(){
-        File file = new File (ttt);
-        String img_path = Environment.getExternalStorageDirectory ( ).toString ( )+"/appmusic/1.jpg";
-        String out_path = Environment.getExternalStorageDirectory ( ).toString ( )+"/appmusic/shuiyin/" + file.getName ();
-        create_img (str_username,img_path);
-        try{
-            shuiyin_test sy = new shuiyin_test ();
-            sy.embed (img_path,ttt,out_path);
-            }catch (MWException e){
-                e.printStackTrace ();
-            }
-    }
 
     class FileUploadTask extends AsyncTask<Object, Integer, Void> {
 
@@ -277,6 +258,7 @@ public class seach_localmusic extends Activity {
         Socket client = null;
         File file;
         DataOutputStream data = null;
+        DataInputStream data_in = null;
         FileInputStream filein = null;
         Long totalSize;
 
@@ -294,9 +276,9 @@ public class seach_localmusic extends Activity {
         //执行异步线程，紧接前一步执行
         @Override
         protected Void doInBackground(Object... arg0) {
-
+            int response_code = 0;
             try {
-                client = new Socket ("192.168.137.1", 10056);
+                client = new Socket ("47.100.202.93", 10056);
             }catch (IOException e){
                 state = 0;
                 Log.e ("tag","链接失败");
@@ -313,6 +295,7 @@ public class seach_localmusic extends Activity {
                     filein = new FileInputStream (file);
                     data = new DataOutputStream (client.getOutputStream ( ));
 
+
                     data.writeUTF (str_username);
                     data.writeUTF (file.getName ());
                     byte[] bytes = new byte[1024];
@@ -324,18 +307,28 @@ public class seach_localmusic extends Activity {
                         publishProgress((int) ((recv_length * 100) / totalSize));  // 触发onProcsessUpgrade()
                     }
                     data.flush ( );
+                    client.shutdownOutput ();
+
+                    //接收反馈
+                    data_in = new DataInputStream(client.getInputStream());
+                    int len1;
+                    String str=null;
+                    byte[] b1 = new byte[1024];
+                    while((len1=data_in.read(b1))!=-1){
+                       str  = new String(b1, 0, len1);
+                    }
+                    response_code = Integer.parseInt (str);
                 }
                 else {
                     Log.e ("tag","file is not exist");
                     client.close ();
                 }
-            }
-            catch (UnknownHostException e) {
-
-                return null;
-            }
-            catch (SocketTimeoutException e) {
-                return null;
+//            catch (UnknownHostException e) {
+//
+//                return null;
+//            }
+//            catch (SocketTimeoutException e) {
+//                return null;
             }catch(IOException e){
                 Log.e ("tag","链接失败");
                 state = 0;
@@ -345,12 +338,16 @@ public class seach_localmusic extends Activity {
             try{
                 filein.close();
                 data.close();
+                data_in.close ();
                 client.close ();
                 state = 1;
-                if (!fabu_mysql (seach_localmusic.this,file.getName ().toString ())){
-                    Log.e ("tag","存入数据库异常");
+
+                if(response_code == 200){
+                    if (!fabu_mysql (seach_localmusic.this,file.getName ().toString ())){
+                        Log.e ("tag","存入数据库异常");
+                    }
+                    else Log.e ("tag","成功存入数据库");
                 }
-                else Log.e ("tag","成功存入数据库");
             }catch (IOException e) {
                 e.printStackTrace();
             }

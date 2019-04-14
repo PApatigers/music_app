@@ -19,7 +19,7 @@
         android:textSize="18sp"/>
 
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="233dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp">
 
@@ -27,14 +27,14 @@
             android:id="@+id/music_song"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:singleLine="true"
+            android:clickable="true"
             android:ellipsize="marquee"
             android:focusable="true"
             android:focusableInTouchMode="true"
+            android:singleLine="true"
             android:text="歌曲名"
             android:textColor="#0d0c0c"
-            android:textSize="20dp"
-            android:clickable="true"/>
+            android:textSize="20dp" />
 
         <TextView
             android:id="@+id/music_singer"
@@ -43,7 +43,7 @@
             android:layout_below="@+id/music_song"
             android:text="歌手"
             android:textColor="#0d0c0c"
-            android:textSize="15sp"/>
+            android:textSize="15sp" />
 
         <TextView
             android:id="@+id/music_duration"
@@ -51,9 +51,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/music_song"
             android:layout_marginLeft="15dp"
-            android:textColor="#0d0c0c"
             android:layout_toRightOf="@+id/music_singer"
             android:text="时间"
+            android:textColor="#0d0c0c"
             android:textSize="15sp" />
     </RelativeLayout>
 
@@ -62,6 +62,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="播放"
-        android:layout_marginStart="150dp"
         tools:ignore="RtlCompat" />
 </LinearLayout>

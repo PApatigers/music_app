@@ -11,12 +11,27 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/local_music"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:gravity="center"
-            android:text="本地音乐" />
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:background="@color/colorPrimary">
+
+            <Button
+                android:id="@+id/re"
+                android:layout_width="72dp"
+                android:layout_height="match_parent"
+                android:text="返回" />
+
+            <TextView
+                android:id="@+id/show"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:text="本地音乐"
+                android:textColor="@color/colorWhite"
+                android:textSize="40dp"
+                android:layout_gravity="center"/>
+        </LinearLayout>
 
 
         <ListView

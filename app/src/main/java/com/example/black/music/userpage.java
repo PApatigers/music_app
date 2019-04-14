@@ -3,7 +3,11 @@ package com.example.black.music;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -12,12 +16,26 @@ import android.widget.Toast;
 import static com.example.black.music.login.str_username;
 
 
-public class userpage extends Activity {
-    Button re;
+public class userpage extends AppCompatActivity {
     TextView nick,fabu,history,shuiyin_detection;
     View.OnClickListener listener_login = null , listener_user = null;
     private static Bundle outState = null;
     public String temp="";
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener ( ) {
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId ( )) {
+                case R.id.navigation_home:
+                    Intent intent = new Intent (userpage.this,music.class);
+                    startActivity (intent);
+                    return true;
+                case R.id.navigation_dashboard:
+                    return true;
+            }
+            return false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,19 +43,13 @@ public class userpage extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.own);
 
-        re = (Button) findViewById(R.id.re);
         nick = (TextView)findViewById(R.id.nickname);
         fabu = (TextView)findViewById(R.id.fabu);
         history = (TextView)findViewById(R.id.buy_his);
         shuiyin_detection = findViewById (R.id.shuiyin);
 
-        re.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent1_2 = new Intent(userpage.this,music.class);
-                startActivity(intent1_2);
-            }
-        });
+        BottomNavigationView navigation = (BottomNavigationView) findViewById (R.id.own_menu);
+        navigation.setOnNavigationItemSelectedListener (mOnNavigationItemSelectedListener);
 
         View user = findViewById(R.id.nickname);
         String aaaa = str_username;

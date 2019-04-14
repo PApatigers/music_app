@@ -14,7 +14,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ShareActionProvider;
 import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
@@ -24,7 +23,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -52,7 +50,7 @@ public class login extends Activity {
     @Override
     protected  void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.my);
+        setContentView(R.layout.login);
 
         //获取控件
         login = (Button) findViewById(R.id.login);
@@ -120,14 +118,17 @@ public class login extends Activity {
             params.add(new BasicNameValuePair("username", str_username));
             params.add(new BasicNameValuePair("password", str_passsword));
             try {
+                Integer temp_str_int = 0;
                 POST.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
                 final HttpResponse REPOSE = new DefaultHttpClient().execute(POST);
                 Log.e("status", REPOSE.getStatusLine().toString());
                 Message msg = new Message ( );
                 String temp = "";
+                String change = "";
                 if (REPOSE.getStatusLine ( ).getStatusCode ( ) == 200) {
                     try {
-                        str = EntityUtils.toString (REPOSE.getEntity ( ), HTTP.UTF_8);
+                        str = EntityUtils.toString (REPOSE.getEntity ( ), HTTP.UTF_16);
+                        //temp_str_int = Integer.parseInt (str);
                         //JSONObject json = new JSONObject (str);
 
                     } catch (IOException e) {

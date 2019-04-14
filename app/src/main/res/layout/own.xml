@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <LinearLayout
@@ -34,61 +37,81 @@
     </LinearLayout>
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/fabu"
+            android:clickable="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginBottom="0.1dp"
+            android:background="#FFFFFF"
+            android:gravity="left"
+            android:paddingTop="12dp"
+            android:text="我要发布"
+            android:textSize="20sp"/>
 
-            <TextView
-                android:id="@+id/fabu"
-                android:clickable="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="0.1dp"
-                android:background="#FFFFFF"
-                android:gravity="left"
-                android:paddingTop="12dp"
-                android:text="我要发布"
-                android:textSize="20sp"/>
+        <TextView
+            android:id="@+id/buy_his"
+            android:clickable="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0.1dp"
+            android:background="#FFFFFF"
+            android:gravity="left"
+            android:paddingTop="12dp"
+            android:text="发布历史"
+            android:textSize="20sp"/>
 
-            <TextView
-                android:id="@+id/buy_his"
-                android:clickable="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="0.1dp"
-                android:background="#FFFFFF"
-                android:gravity="left"
-                android:paddingTop="12dp"
-                android:text="发布历史"
-                android:textSize="20sp"/>
-
-            <TextView
-                android:id="@+id/shuiyin"
-                android:clickable="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="0.1dp"
-                android:background="#FFFFFF"
-                android:gravity="left"
-                android:paddingTop="12dp"
-                android:text="水印检测"
-                android:textSize="20sp"/>
+        <TextView
+            android:id="@+id/shuiyin"
+            android:clickable="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0.1dp"
+            android:background="#FFFFFF"
+            android:gravity="left"
+            android:paddingTop="12dp"
+            android:text="水印检测"
+            android:textSize="20sp"/>
 
     </LinearLayout>
-
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="bottom">
 
-        <Button
-            android:id="@+id/re"
+        <android.support.design.widget.BottomNavigationView
+            android:id="@+id/own_menu"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_gravity="bottom"
-            android:text="返回" />
+            android:layout_marginEnd="0dp"
+            android:layout_marginStart="0dp"
+            android:background="?android:attr/windowBackground"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:menu="@menu/navigation" />
 
     </LinearLayout>
+
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="bottom">-->
+
+    <!--<Button-->
+    <!--android:id="@+id/re"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="bottom"-->
+    <!--android:text="返回" />-->
+
+    <!--</LinearLayout>-->
 
 </LinearLayout>

@@ -139,7 +139,7 @@ public class shuiyin_detection extends Activity {
         protected Void doInBackground(Object... objects) {
 
             try {
-                client = new Socket ("192.168.137.1",10056);
+                client = new Socket ("47.100.202.93",8888);
                 file1 = new File(path_1);
                 file2 = new File(path_2);
                 totalsize = file1.length() + file2.length();
@@ -147,6 +147,7 @@ public class shuiyin_detection extends Activity {
                     Log.e ("tag","file error");
                     return null;
                 }
+
 
                 filein = new FileInputStream(file1);
                 data = new DataOutputStream(client.getOutputStream());
@@ -191,7 +192,7 @@ public class shuiyin_detection extends Activity {
                 data.close();
 
                 //开始接受传来的图片
-                client = new Socket ("192.168.137.1",10056);
+                client = new Socket ("47.100.202.93",8888);
                 Log.e("tag","重新建立链接");
                 Log.e ("tag","图像来了");
                 DataInputStream img_in = new DataInputStream (client.getInputStream ());
