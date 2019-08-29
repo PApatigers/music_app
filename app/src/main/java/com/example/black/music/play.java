@@ -10,11 +10,26 @@ import java.io.IOException;
 public class play {
     MediaPlayer mediaPlayer ;
 
+    private static play instance = null;
+    private play(){
+        mediaPlayer = new MediaPlayer();
+    };
+
+    public static play getInstance(){
+        if(instance == null)
+            instance = new play();
+        return instance;
+    }
+
     public void music_paly(String path){
+        mediaPlayer.release();
         File file = new File(path);
         if (file.exists () && file.length ()>0){
             try {
-                mediaPlayer= new MediaPlayer ();
+                if(mediaPlayer != null){
+                    mediaPlayer.stop();
+                    mediaPlayer = new MediaPlayer();
+                }
                 mediaPlayer.setDataSource (path);
                 mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
@@ -31,5 +46,9 @@ public class play {
                 e.printStackTrace ( );
             }
         }
+    }
+
+    public void pause(){
+        mediaPlayer.pause();
     }
 }

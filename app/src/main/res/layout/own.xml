@@ -66,6 +66,18 @@
             android:textSize="20sp"/>
 
         <TextView
+            android:id="@+id/jiami_fabu"
+            android:clickable="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0.1dp"
+            android:background="#FFFFFF"
+            android:gravity="left"
+            android:paddingTop="12dp"
+            android:text="加密发布"
+            android:textSize="20sp"/>
+
+        <TextView
             android:id="@+id/shuiyin"
             android:clickable="true"
             android:layout_width="match_parent"

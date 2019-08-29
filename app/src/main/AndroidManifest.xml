@@ -5,6 +5,7 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE "/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <application
 
@@ -12,9 +13,19 @@
         android:allowBackup="true"
         android:icon="@mipmap/bg"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <service
+            android:name=".service.Test_service1"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.zhy.aidl.calc"></action>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </service>
+
 
         <activity android:name=".music">
             <intent-filter>
@@ -23,6 +34,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".activity.MainActivity"/>
 
         <activity
 
@@ -76,7 +89,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".search">
+        <activity android:name=".activity.recycleview">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -93,6 +106,12 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <activity android:name=".activity.DownloadActivity"/>
+        <service android:name=".service.DownloadService"/>
+
+        <activity android:name=".activity.SearchActivity"/>
+        <activity android:name=".test.TestActivity"/>
     </application>
 
 </manifest>

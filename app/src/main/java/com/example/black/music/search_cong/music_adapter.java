@@ -1,16 +1,14 @@
 package com.example.black.music.search_cong;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.black.music.R;
-import com.example.black.music.fabu_seach.record;
+import com.example.black.music.bean.record;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +21,7 @@ public class music_adapter extends BaseAdapter {
     public music_adapter(Object seach , ArrayList list){
         this.context = (Context) seach;
         this.list = list;
-        layoutInflater = (LayoutInflater)this.context.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
+        this.layoutInflater = (LayoutInflater)this.context.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
@@ -62,6 +60,15 @@ public class music_adapter extends BaseAdapter {
 
         return view;
     }
+
+//    @Override
+//    public int getItemViewType(int position) {
+//        if (comNames[position].length() == 1) {
+//            return TYPE_TITLE;
+//        } else {
+//            return TYPE_COMPANY;
+//        }
+//    }
     class ViewHolder{
         TextView username;
         TextView musicname;

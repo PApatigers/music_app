@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">music</string>
+
+    <string name="search_hind">请输入歌曲名</string>
+    <string name="main_tab1">发布榜</string>
+    <string name="main_tab2">下载榜</string>
 </resources>

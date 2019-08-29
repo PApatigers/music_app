@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -15,12 +14,12 @@ import android.graphics.Paint;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -31,7 +30,6 @@ import android.widget.Toast;
 import com.example.black.music.search_cong.bean;
 import com.example.black.music.search_cong.myadapter;
 import com.example.black.music.search_cong.song;
-import com.mathworks.toolbox.javabuilder.MWException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -47,28 +45,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
 
-
-import shuiyin.shuiyin_test;
-
-
-
 //import static android.net.sip.SipErrorCode.TIME_OUT;
 //mport static android.provider.Telephony.Mms.Part.CHARSET;
-import static android.graphics.Bitmap.Config.ARGB_8888;
-import static com.example.black.music.application.user_state;
 import static com.example.black.music.login.str_username;
 
 public class seach_localmusic extends Activity {
@@ -77,12 +60,11 @@ public class seach_localmusic extends Activity {
     private ListView music_list;
     private List<song> list;
     private myadapter adapter;
-    private Button search,play;
+    private Button search, playButton, pauseBt;
     public File file;
     String ttt = "";
     //ProgressDialog wait;
     AlertDialog.Builder dialog;
-    MediaPlayer mediaPlayer = new MediaPlayer ();
     private  int TIME_OUT = 100000;
     private String CHARSET = "UTF_8";
 
@@ -127,9 +109,11 @@ public class seach_localmusic extends Activity {
 
     private void obtainMediaInfo() {
         final int[] p = new int[1];
+        final String[] path = {""};
         music_list = (ListView) findViewById (R.id.music_list);
         search = (Button) findViewById (R.id.search);
-        play = (Button)findViewById (R.id.play);
+        playButton = findViewById(R.id.play_bt);
+        pauseBt = findViewById(R.id.pause_bt);
         re = (Button)findViewById (R.id.re);
         list = new ArrayList<> ( );
 
@@ -146,11 +130,13 @@ public class seach_localmusic extends Activity {
                 list = bean.getMusicdata (seach_localmusic.this);
                 if (list.size ( ) != 0) {
                     adapter = new myadapter (seach_localmusic.this, list);
+
                     music_list.setOnItemClickListener (new AdapterView.OnItemClickListener ( ) {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                             ttt = list.get (position).path;
                             file = new File (list.get (position).path);
+                            path[0] = list.get(position).path;
                             dialog = new AlertDialog.Builder (seach_localmusic.this);
                             dialog.setTitle ("提示");
                             p[0] = position+1;
@@ -172,19 +158,14 @@ public class seach_localmusic extends Activity {
                             dialog.show ();
                         }
                     });
-                  /*  play.setOnClickListener (new View.OnClickListener ( ) {
-                        @Override
-                        public void onClick(View v) {
-                            play a = new play ();
-                            a.music_paly ();
-                        }
-                    });*/
                     music_list.setAdapter (adapter);
                 } else {
                     Toast.makeText (seach_localmusic.this, "未找到音乐文件", Toast.LENGTH_SHORT).show ( );
                 }
             }
         });
+
+
     }
 
     //生成含有发布者信息的水印图像
@@ -297,6 +278,8 @@ public class seach_localmusic extends Activity {
 
 
                     data.writeUTF (str_username);
+                    Log.e ("tag","上传是的imsi" + getIMSI ());
+                    data.writeUTF (getIMSI ());
                     data.writeUTF (file.getName ());
                     byte[] bytes = new byte[1024];
                     int length = 0;
@@ -378,5 +361,18 @@ public class seach_localmusic extends Activity {
             }
         }
 
+    }
+
+    String getIMSI(){
+        String temp_imsi = null;
+        TelephonyManager mTelephonyMgr = (TelephonyManager) this.getSystemService (Context.TELEPHONY_SERVICE);
+        if (ActivityCompat.checkSelfPermission (this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            return "";
+        }
+        temp_imsi = mTelephonyMgr.getSubscriberId ( );
+        if(temp_imsi == null)
+            temp_imsi = "";
+        Log.e ("tag","imsi" + temp_imsi);
+        return temp_imsi;
     }
 }

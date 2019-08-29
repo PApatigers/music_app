@@ -5,4 +5,13 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="transparent">#00000000</color>
+    <color name="weilan">#70f3ff</color>
+    <color name="bilan">#3eede7</color>
+    <color name="bule">#44cef6</color>
+    <color name="tab_unchecked">#757575</color>
+
+    <color name="black">#000000</color>
+
+    <color name="half_corner_color">#1fffffff</color>
+
 </resources>

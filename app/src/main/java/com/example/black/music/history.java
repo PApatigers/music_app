@@ -2,24 +2,19 @@ package com.example.black.music;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.ContentObservable;
-import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.Button;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.example.black.music.fabu_seach.record;
+import com.example.black.music.bean.record;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -28,13 +23,10 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
-import com.alibaba.fastjson.JSON;
+
 import com.example.black.music.search_cong.his_adapter;
-import com.example.black.music.search_cong.music_adapter;
 
 import java.util.ArrayList;
-
-import static com.example.black.music.music.auto_user;
 
 public class history extends Activity {
     private  ListView listView;

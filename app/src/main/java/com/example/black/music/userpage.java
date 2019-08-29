@@ -21,6 +21,7 @@ public class userpage extends AppCompatActivity {
     View.OnClickListener listener_login = null , listener_user = null;
     private static Bundle outState = null;
     public String temp="";
+    TextView jiami_fabu;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener ( ) {
 
         @Override
@@ -30,7 +31,7 @@ public class userpage extends AppCompatActivity {
                     Intent intent = new Intent (userpage.this,music.class);
                     startActivity (intent);
                     return true;
-                case R.id.navigation_dashboard:
+                case R.id.navigation_me:
                     return true;
             }
             return false;
@@ -42,6 +43,8 @@ public class userpage extends AppCompatActivity {
         Log.e ("tag","正在create");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.own);
+
+        init_jiami();
 
         nick = (TextView)findViewById(R.id.nickname);
         fabu = (TextView)findViewById(R.id.fabu);
@@ -136,6 +139,19 @@ public class userpage extends AppCompatActivity {
         });*/
     }
 
+
+    //加密发布
+    void init_jiami(){
+//        jiami_fabu = findViewById (R.id.jiami_fabu);
+//        jiami_fabu.setOnClickListener (new View.OnClickListener ( ) {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent (userpage.this,jiami_file.class);
+//                startActivity (intent);
+//                userpage.this.finish ();
+//            }
+//        });
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.e("tag","正在回调result");

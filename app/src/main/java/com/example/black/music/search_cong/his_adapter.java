@@ -1,15 +1,13 @@
 package com.example.black.music.search_cong;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.black.music.R;
-import com.example.black.music.fabu_seach.record;
+import com.example.black.music.bean.record;
 
 import java.util.List;
 
